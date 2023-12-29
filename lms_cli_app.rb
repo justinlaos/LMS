@@ -21,6 +21,18 @@ class Library
         end
         puts JSON.pretty_generate(catalog)
     end
+
+    def checkout_or_return_book(title)
+        book = books.find { |book| book.title == title }
+
+        if book == nil
+            puts 'Book does not exist. Maybe you should write it yourself'
+            return
+        end
+
+        book.available = !book.available
+        puts book.available ? "Thanks for returning this book, even though its late" : "Alright enjoy your book. Dont lose it for 30 years"
+    end
 end
 
 class Author
@@ -73,8 +85,12 @@ loop do
 
     case choice
     when 1
-      library.catalog
+        library.catalog
+    when 3
+        print "Enter the title of the book to check out or return: "
+        title = gets.chomp
+        library.checkout_or_return_book(title)
     else
-      puts "SHHHHH! please be quite in the library"
+        puts "SHHHHH! please be quite in the library"
     end
 end
