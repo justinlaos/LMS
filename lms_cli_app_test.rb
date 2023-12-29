@@ -19,3 +19,19 @@ class TestBook < Test::Unit::TestCase
     end
 end
 
+class TestLibrary < Test::Unit::TestCase
+    def setup
+        @author1 = Author.new('Test Author 1')
+        @author2 = Author.new('Test Author 2')
+        @book1 = Book.new('Test Book 1', author1, '123456789')
+        @book2 = Book.new('Test Book 2', author2, '987654321')
+    
+        @library = Library.new
+        @library.add_book(book1)
+        @library.add_book(book2)
+    end
+  
+    def test_catalog_in_json_format
+        assert_output(nil, /Book 1.*Book 2/m) { @library.catalog }
+    end
+end
