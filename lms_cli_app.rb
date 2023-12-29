@@ -1,4 +1,5 @@
 require 'json'
+require 'yaml'
 
 class Library
     attr_accessor :books
@@ -8,6 +9,11 @@ class Library
 
     def add_book(book)
         books << book
+    end
+
+    def get_info
+        # Load configuration from YAML file
+        puts YAML.load_file('config.yml').inspect
     end
 
     def get_book(title)
@@ -59,6 +65,9 @@ class Book
 end
 
 
+# ___________________________________________________________________________
+# Creating Data
+
 # Create authors
 author1 = Author.new('Stephen King')
 author2 = Author.new('James Patterson')
@@ -77,8 +86,9 @@ library.add_book(book2)
 library.add_book(book3)
 library.add_book(book4)
 
-
+# ___________________________________________________________________________
 # User interaction, Comment out to run tests
+
 puts "Welcome to the Library Management System"
 
 loop do
@@ -86,7 +96,8 @@ loop do
     puts "1. Display Library Catalog"
     puts "2. Search for a Book"
     puts "3. Check Out or Return a Book"
-    puts "4. Exit"
+    puts "4. Library Information"
+    puts "5. Exit"
 
     case gets.chomp.to_i
     when 1
@@ -99,7 +110,9 @@ loop do
         print "\nEnter the title of the book to check out or return: "
         title = gets.chomp
         library.checkout_or_return_book(title)
-    when 4
+    when 4 
+        library.get_info()
+    when 5
         break
     else
         puts "\nSHHHHH! please be quite in the library"
