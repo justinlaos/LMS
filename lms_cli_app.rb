@@ -10,28 +10,34 @@ class Library
         books << book
     end
 
-    def catalog
-        catalog = books.map do |book|
-            { 
-                title: book.title, 
-                author: book.author.name, 
-                isbn: book.isbn, 
-                available: book.available 
-            }
+    def get_book(title)
+        book = books.find { |book| book.title == title }
+        if book == nil
+            puts "\nBook does not exist. Maybe you should write it yourself"
+            return
+        else
+            book
         end
-        puts JSON.pretty_generate(catalog)
+    end
+
+    def search_for_book(title)
+        book = get_book(title)
+        return if book == nil
+        puts JSON.pretty_generate({ title: book.title, author: book.author.name, isbn: book.isbn, available: book.available } )
     end
 
     def checkout_or_return_book(title)
-        book = books.find { |book| book.title == title }
-
-        if book == nil
-            puts 'Book does not exist. Maybe you should write it yourself'
-            return
-        end
-
+        book = get_book(title)
+        return if book == nil
         book.available = !book.available
-        puts book.available ? "Thanks for returning this book, even though its late" : "Alright enjoy your book. Dont lose it for 30 years"
+        puts book.available ? "\nThanks for returning this book, even though its late" : "\nAlright enjoy your book. Dont lose it for 30 years"
+    end
+
+    def catalog
+        catalog = books.map do |book|
+            { title: book.title, author: book.author.name, isbn: book.isbn, available: book.available }
+        end
+        puts JSON.pretty_generate(catalog)
     end
 end
 
@@ -81,16 +87,21 @@ loop do
     puts "2. Search for a Book"
     puts "3. Check Out or Return a Book"
     puts "4. Exit"
-    choice = gets.chomp.to_i
 
-    case choice
+    case gets.chomp.to_i
     when 1
         library.catalog
+    when 2
+        print "\nEnter books title: "
+        title = gets.chomp
+        library.search_for_book(title)
     when 3
-        print "Enter the title of the book to check out or return: "
+        print "\nEnter the title of the book to check out or return: "
         title = gets.chomp
         library.checkout_or_return_book(title)
+    when 4
+        break
     else
-        puts "SHHHHH! please be quite in the library"
+        puts "\nSHHHHH! please be quite in the library"
     end
 end
